@@ -1,24 +1,24 @@
 import React, { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Layout } from './components/Layout';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+
 import './custom.css';
-import { useAppSelector } from "./redux/hooks";
-import { Url } from "./components/constants/url";
-import Counter from './components/Counter';
+import { useAppSelector } from './redux/hooks';
+import { Url } from './components/constants/url';
 import SignIn from './components/authentication/Login';
-import SchedulerAppointments from './components/SchedulerAppointments';
+
 import { selectAuthenticationState } from './redux/store';
+import SchedulerAppointments from './components/Scheduler/SchedulerAppointments';
+import { Layout } from './components/Layout';
 
 const App = () => {
-    const dotenv = require("dotenv");
-    dotenv.config();
     const isAuthenticated = useAppSelector(selectAuthenticationState);
+    
     return (
         <Layout>
             <Routes>
                 {isAuthenticated ? (
                     <>
-                        <Route path={Url.Default} element={<Counter />} />
+                        <Route path={Url.Default} element={<SchedulerAppointments />} />
                         <Route path={Url.Appointments.Main} element={<SchedulerAppointments />} />
                         <Route path={Url.Authentication.Login} element={<SignIn />} />
                     </>

@@ -14,7 +14,7 @@ const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
 let root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
     import((`hide-cra-error-overlay`)).then(({ initHideOverlay }) =>
         initHideOverlay()
     );
@@ -24,11 +24,8 @@ if (process.env.NODE_ENV !== "production") {
 root.render(
     <Provider store={store}>
         <BrowserRouter basename={baseUrl || '/'}>
-            
-            <AuthenticationProvider />
+            <AuthenticationProvider/>
             <App/>
-        
-        
         </BrowserRouter>
     </Provider>
 );

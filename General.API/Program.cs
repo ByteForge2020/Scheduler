@@ -1,5 +1,6 @@
 using Common;
 using Common.Api.BaseConfiguration;
+using Common.Authorization;
 using Common.Middlewares;
 using General.Application.Queries.GetCustomers;
 using General.Infrastructure;
@@ -18,8 +19,10 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(opt => { opt.Suppr
 var connection = builder.Configuration.GetConnectionString(SettingsSectionKey.DatabaseDefaultConnection);
 builder.Services.AddDbContext<GeneralDbContext>(options => options.UseSqlServer(connection));
 builder.Services.AddScoped<IGeneralDbContext, GeneralDbContext>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAuthorization, AuthorizationContext>();
 
-builder.Services.AddMediatR(typeof(TestHandler).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(TestQuery).GetTypeInfo().Assembly);
 
 // Other service configurations can go here
 
@@ -50,6 +53,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 // Uncomment if using custom middleware
 app.UseMiddleware<ExceptionLoggingMiddleware>();
+
+
 
 app.UseRouting();
 app.UseAuthorization();

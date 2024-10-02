@@ -29,7 +29,10 @@
         "AllowedScopes": []
       },
       "UpstreamPathTemplate": "/api/general/{url}",
-      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"]
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"],
+      "AddHeadersToRequest": {
+        "AccountId": "Claims[AccountId] > value > |"
+      }
     }
   ]
 }

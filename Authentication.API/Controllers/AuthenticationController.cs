@@ -80,7 +80,7 @@ namespace Authentication.API.Controllers
                     HttpOnly = true,
                     SameSite = SameSiteMode.None,
                     Secure = true,
-                    Expires = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+                    Expires = DateTime.SpecifyKind(refreshResponse.RefreshTokenExpiry, DateTimeKind.Utc)
                 }
             );
 

@@ -47,13 +47,17 @@ export default function SignIn() {
             password: password,
         };
         
-        let response = await ApiClient.post('/api/authentication/login', jsonData, { withCredentials: true });
-        
-        if (response.succeeded) {
-            ApiClient.configureAuthorization(response.accessToken);
-            dispatch(authenticate());
-            navigate(Url.Appointments.Main);
-        }
+        ApiClient.post('/api/authentication/login', jsonData, { withCredentials: true })
+            .then(response => {
+                if (response.succeeded) {
+                    ApiClient.configureAuthorization(response.accessToken);
+                    dispatch(authenticate());
+                    navigate(Url.Appointments.Main);
+                }
+            })
+            .catch(error => {
+                console.error('Login failed', error);
+            });
     };
     
     return (

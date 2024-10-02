@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Scheduler } from "@aldabil/react-scheduler";
-import { EVENTS } from "./EVENTS";
-import { ApiClient } from './api/api-client';
+import { EVENTS } from '../EVENTS';
+import { ApiClient } from '../api/api-client';
+
 
 export default function SchedulerAppointments() {
     
@@ -13,17 +14,16 @@ export default function SchedulerAppointments() {
                 {
                     name: "customDropdown",
                     type: "select",
-                    // label: "Custom Dropdown", // Название поля
-                    // required: true, // Делает поле обязательным
+                    // label: "Custom Dropdown", 
+                    // required: true, 
                     options: [
                         { id: "option1", text: "option1", value: "option1" }
                     ],
                 },
-                // Другие кастомные поля
             ]}
             onEventClick={() => {
                 const resp = ApiClient.get("/api/General/Test");
-            }}
+            }}                          
         />
     );
 };

@@ -2,6 +2,7 @@ using Authentication.Application.Commands.LogIn;
 using Authentication.Application.Dto;
 using Authentication.Infrastructure.Data;
 using Authentication.Infrastructure.Entities;
+using Common.Authorization;
 using Common.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +21,6 @@ namespace Authentication.Application.Services.JwtService
         private readonly AuthenticationDbContext _authenticationDbContext;
         private readonly UserManager<SchedulerUser> _userManager;
         private readonly SignInManager<SchedulerUser> _signInManager;
-
-        private const string UserIdClaim = "userid";
-        private const string AccountIdClaim = "accountid";
 
         public JwtService(
             IOptions<JwtSettings> options,
@@ -70,7 +68,7 @@ namespace Authentication.Application.Services.JwtService
             {
                 return new TokenPair {Succeeded = false};
             }
-            
+
             // for refreshing
             var user = await _authenticationDbContext.SchedulerUsers
                 .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken && x.Email == userEmail, ct);
@@ -99,12 +97,12 @@ namespace Authentication.Application.Services.JwtService
 
             var newTokenPair = new TokenPair()
             {
-                AccessToken = GenerateToken(userClaims, true),
-                RefreshToken = GenerateToken(userClaims, false),
+                AccessToken = GenerateToken(claims: userClaims, shortTermToken: true),
+                RefreshToken = GenerateToken(claims: userClaims, shortTermToken: false),
                 RefreshTokenExpiry = DateTime.Now.AddDays(7),
                 Succeeded = true
             };
-            
+
             user.RefreshToken = newTokenPair.RefreshToken;
             user.RefreshTokenExpires = newTokenPair.RefreshTokenExpiry;
             user.RefreshTokenCreated = DateTime.Now;
@@ -117,7 +115,8 @@ namespace Authentication.Application.Services.JwtService
         {
             using RSA rsa = RSA.Create();
             rsa.ImportPkcs8PrivateKey(
-                source: Convert.FromBase64String(_settings.RsaPrivateKey), //TODO: move to a safer place(AWS Secrets Manager?)
+                source:
+                Convert.FromBase64String(_settings.RsaPrivateKey), //TODO: move to a safer place(AWS Secrets Manager?)
                 bytesRead: out int _);
 
             var credentials = new SigningCredentials(
@@ -146,8 +145,8 @@ namespace Authentication.Application.Services.JwtService
             return new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Email, user.Email),
-                new(UserIdClaim, user.Id),
-                new(AccountIdClaim, user.AccountId.ToString()),
+                new(JwtTokenClaims.UserId, user.Id),
+                new(JwtTokenClaims.AccountId, user.AccountId.ToString()),
             };
         }
     }

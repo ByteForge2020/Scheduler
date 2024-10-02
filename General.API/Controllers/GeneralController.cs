@@ -1,3 +1,4 @@
+using Common.Authorization.AuthorizationAttributes;
 using General.Application.Queries.GetCustomers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,8 @@ namespace General.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<TestResponse>> Test([FromQuery] TestQuery command, CancellationToken ct)
+        [AccountIdAuthorization]
+        public async Task<ActionResult<TestQuery.Result>> Test([FromQuery] TestQuery command, CancellationToken ct)
         {
             return await _mediator.Send(command, ct);
         }

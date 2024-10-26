@@ -2,8 +2,8 @@ using Common;
 using Common.Api.BaseConfiguration;
 using Common.Authorization;
 using Common.Middlewares;
-using General.Application.Queries.GetCustomers;
-using General.Infrastructure;
+using Customer.API;
+using Customer.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +17,12 @@ builder.AddBasicMicroserviceFeatures();
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(opt => { opt.SuppressModelStateInvalidFilter = true; });
 
 var connection = builder.Configuration.GetConnectionString(SettingsSectionKey.DatabaseDefaultConnection);
-builder.Services.AddDbContext<GeneralDbContext>(options => options.UseSqlServer(connection));
-builder.Services.AddScoped<IGeneralDbContext, GeneralDbContext>();
+builder.Services.AddDbContext<CustomerDbContext>(options => options.UseSqlServer(connection));
+builder.Services.AddScoped<ICustomerDbContext, CustomerDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthorization, AuthorizationContext>();
 
-builder.Services.AddMediatR(typeof(TestQuery).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(AssemblyMarker).GetTypeInfo().Assembly);
 
 // Other service configurations can go here
 
@@ -36,15 +36,6 @@ if (app.Environment.IsDevelopment())
     // app.UseSwagger();
     // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clear.General.API v1"));
 }
-
-app.UseCors(options =>
-{
-    options.WithOrigins("http://localhost:17863"); // is it need here? 
-    options.AllowAnyMethod();
-    options.AllowAnyHeader();
-    options.AllowCredentials();
-    options.SetIsOriginAllowed((_) => true);
-});
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {

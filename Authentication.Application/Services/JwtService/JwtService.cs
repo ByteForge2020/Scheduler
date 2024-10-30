@@ -128,7 +128,7 @@ namespace Authentication.Application.Services.JwtService
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = shortTermToken ? DateTime.Now.AddMinutes(3) : DateTime.Now.AddDays(7),
+                Expires = shortTermToken ? DateTime.Now.AddMinutes(30) : DateTime.Now.AddDays(7),
                 SigningCredentials = credentials,
                 Issuer = "jwt-scheduler",
                 Audience = "jwt-scheduler"

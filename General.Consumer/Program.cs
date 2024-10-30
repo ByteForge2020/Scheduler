@@ -2,6 +2,7 @@ using Common;
 using Common.Api.BaseConfiguration;
 using Common.Authorization;
 using Common.Middlewares;
+using General.Consumer.Consumers;
 using General.Infrastructure;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +14,10 @@ builder.Services.AddDbContext<GeneralDbContext>(options => options.UseSqlServer(
 builder.Services.AddScoped<IGeneralDbContext, GeneralDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthorization, AuthorizationContext>();
+
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumersFromNamespaceContaining<Program>();
+    x.AddConsumersFromNamespaceContaining<CreateCustomerBusQueryConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -24,14 +26,10 @@ builder.Services.AddMassTransit(x =>
             h.Username("guest");
             h.Password("guest");
         });
-        
-        cfg.MessageTopology.SetEntityNameFormatter(new CustomEntityNameFormatter("Dev."));
 
         cfg.ConfigureEndpoints(context);
     });
 });
-
-builder.Services.AddMassTransitHostedService();
 
 var app = builder.Build();
 

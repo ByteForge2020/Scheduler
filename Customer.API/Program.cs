@@ -3,7 +3,9 @@ using Common.Api.BaseConfiguration;
 using Common.Authorization;
 using Common.Middlewares;
 using Customer.API;
+using Customer.Application.Commands.CreateCustomer;
 using Customer.Infrastructure;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +15,14 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddBasicMicroserviceFeatures();
-// Add services to the container
+
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(opt => { opt.SuppressModelStateInvalidFilter = true; });
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(60994); 
+    options.AddServerHeader = false;
+});
 
 var connection = builder.Configuration.GetConnectionString(SettingsSectionKey.DatabaseDefaultConnection);
 builder.Services.AddDbContext<CustomerDbContext>(options => options.UseSqlServer(connection));
@@ -22,19 +30,25 @@ builder.Services.AddScoped<ICustomerDbContext, CustomerDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthorization, AuthorizationContext>();
 
-builder.Services.AddMediatR(typeof(AssemblyMarker).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(CreateCustomerCommand).GetTypeInfo().Assembly);
 
-// Other service configurations can go here
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", 15672, "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    // Uncomment if Swagger is needed
-    // app.UseSwagger();
-    // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clear.General.API v1"));
 }
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -42,7 +56,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-// Uncomment if using custom middleware
 app.UseMiddleware<ExceptionLoggingMiddleware>();
 
 app.UseRouting();

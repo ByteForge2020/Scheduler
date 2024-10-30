@@ -13,6 +13,12 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(48948); 
+    options.AddServerHeader = false;
+});
+
 builder.AddBasicMicroserviceFeatures();
 // Add services to the container
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(opt => { opt.SuppressModelStateInvalidFilter = true; });

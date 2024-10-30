@@ -17,7 +17,8 @@ public class AccountIdAuthorizationAttribute : Attribute, IActionFilter
 
         try
         {
-            authorizationService.ThrowOrGetAccountId();
+            var accountId = authorizationService.ThrowOrGetAccountId();
+            context.HttpContext.Items["AccountId"] = accountId;
         }
         catch (InvalidOperationException ex)
         {

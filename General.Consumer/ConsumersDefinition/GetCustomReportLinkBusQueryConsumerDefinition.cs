@@ -4,7 +4,7 @@ using MassTransit;
 
 namespace General.Consumer.ConsumersDefinition;
 
-public class GetCustomReportLinkBusQueryConsumerDefinition : ConsumerDefinition<MyMessageConsumer>
+public class GetCustomReportLinkBusQueryConsumerDefinition : ConsumerDefinition<CreateCustomerBusQueryConsumer>
 {
     public GetCustomReportLinkBusQueryConsumerDefinition()
     {

@@ -11,7 +11,10 @@ namespace Customer.Infrastructure.Configuration
             
             builder.Property(e => e.Name)
                 .IsRequired() 
-                .HasMaxLength(300); 
+                .HasMaxLength(300);
+            
+            builder.Property(e => e.AccountId)
+                .IsRequired(); 
 
             builder.Property(e => e.Surname)
                 .IsRequired() 

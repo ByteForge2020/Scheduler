@@ -22,7 +22,5 @@ namespace General.API.Controllers
         {
             return await _mediator.Send(command, ct);
         }
-        
-
     }
 }

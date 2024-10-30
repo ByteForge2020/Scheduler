@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Api\Common.Api.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Customer.Application\Customer.Application.csproj" />
     <ProjectReference Include="..\Customer.Infrastructure\Customer.Infrastructure.csproj" />
   </ItemGroup>
 

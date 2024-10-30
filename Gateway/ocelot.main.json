@@ -33,6 +33,25 @@
       "AddHeadersToRequest": {
         "AccountId": "Claims[AccountId] > value > |"
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/customer/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 60994
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "UpstreamPathTemplate": "/api/customer/{url}",
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"],
+      "AddHeadersToRequest": {
+        "AccountId": "Claims[AccountId] > value > |"
+      }
     }
   ]
 }

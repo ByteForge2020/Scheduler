@@ -9,11 +9,13 @@
   <ItemGroup>
     <PackageReference Include="MassTransit" Version="8.2.5" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.5" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Api\Common.Api.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\General.Application\General.Application.csproj" />
     <ProjectReference Include="..\General.Infrastructure\General.Infrastructure.csproj" />
   </ItemGroup>
 

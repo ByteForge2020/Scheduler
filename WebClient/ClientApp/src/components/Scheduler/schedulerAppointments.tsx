@@ -5,7 +5,6 @@ import { ApiClient } from '../api/api-client';
 
 
 export default function SchedulerAppointments() {
-    
     return (
         <Scheduler
             events={EVENTS}
@@ -23,7 +22,7 @@ export default function SchedulerAppointments() {
             ]}
             onEventClick={() => {
                 const resp = ApiClient.get("/api/General/Test");
-            }}                          
+            }}
         />
     );
 };

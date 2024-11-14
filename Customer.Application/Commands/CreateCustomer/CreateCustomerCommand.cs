@@ -1,4 +1,5 @@
 using Common.Contracts;
+using Customer.Application.Dto;
 using Customer.Infrastructure;
 using MassTransit;
 using MediatR;
@@ -9,7 +10,7 @@ namespace Customer.Application.Commands.CreateCustomer
     public record CreateCustomerCommand(Guid AccountId, string Name, string Phone, string Surname)
         : IRequest<CreateCustomerCommand.Result>
     {
-        public record Result(bool IsSuccess);
+        public record Result(CustomerDto CustomerDto);
 
         public class Handler : IRequestHandler<CreateCustomerCommand, Result>
         {
@@ -38,14 +39,21 @@ namespace Customer.Application.Commands.CreateCustomer
                 await _dbContext.Customers.AddAsync(customer, cancellationToken);
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 await _publishEndpoint.Publish(new CreateCustomerBusQuery
+                    {
+                        Surname = customer.Surname,
+                        Name = customer.Surname,
+                        Phone = customer.Phone,
+                        Id = customer.Id,
+                        AccountId = customer.AccountId
+                    },
+                    cancellationToken);
+                return new Result(new CustomerDto
                 {
                     Surname = customer.Surname,
-                    Name = customer.Surname,
                     Phone = customer.Phone,
                     Id = customer.Id,
-                    AccountId = customer.AccountId
-                }, cancellationToken);
-                return new Result(IsSuccess: true);
+                    Name = customer.Name
+                });
             }
         }
     }

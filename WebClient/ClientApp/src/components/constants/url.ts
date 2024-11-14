@@ -6,4 +6,7 @@
   Appointments: {
     Main: "/appointments"
   },
+  Customers: {
+    Main: "/customers"
+  },
 };

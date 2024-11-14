@@ -6,7 +6,6 @@ interface AuthenticationState {
 
 const initialState = { value: false } satisfies AuthenticationState as AuthenticationState
 
-
 const authenticationSlice = createSlice({
     name: "authenticated",
     initialState,

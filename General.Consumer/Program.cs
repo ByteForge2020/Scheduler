@@ -2,6 +2,7 @@ using Common;
 using Common.Api.BaseConfiguration;
 using Common.Authorization;
 using Common.Middlewares;
+using Customer.Contracts;
 using General.Application.Commands.CreateCustomer;
 using General.Consumer.Consumers;
 using General.Infrastructure;
@@ -18,7 +19,11 @@ builder.Services.AddScoped<IGeneralDbContext, GeneralDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthorization, AuthorizationContext>();
 builder.Services.AddMediatR(typeof(CreateCustomerCommand).Assembly);
-
+builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<CustomerService.CustomerServiceClient>(o =>
+{
+    o.Address = new Uri(builder.Configuration["Grpc:CustomerServiceUrl"]);
+});
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumersFromNamespaceContaining<CreateCustomerBusQueryConsumer>();
@@ -36,9 +41,7 @@ builder.Services.AddMassTransit(x =>
 });
 
 var app = builder.Build();
-
 app.MapGet("/", () => "Hello World!");
-// Uncomment if using custom middleware
 app.UseMiddleware<ExceptionLoggingMiddleware>();
 
 app.Run();

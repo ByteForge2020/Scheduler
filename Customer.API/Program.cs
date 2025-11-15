@@ -4,6 +4,7 @@ using Common.Authorization;
 using Common.Middlewares;
 using Customer.API;
 using Customer.Application.Commands.CreateCustomer;
+using Customer.GrpcService.Services;
 using Customer.Infrastructure;
 using MassTransit;
 using MediatR;
@@ -15,7 +16,6 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddBasicMicroserviceFeatures();
-
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(opt => { opt.SuppressModelStateInvalidFilter = true; });
 
 builder.WebHost.ConfigureKestrel(options =>
@@ -29,6 +29,7 @@ builder.Services.AddDbContext<CustomerDbContext>(options => options.UseSqlServer
 builder.Services.AddScoped<ICustomerDbContext, CustomerDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthorization, AuthorizationContext>();
+builder.Services.AddGrpc();
 
 builder.Services.AddMediatR(typeof(CreateCustomerCommand).GetTypeInfo().Assembly);
 
@@ -55,6 +56,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
+app.MapGrpcService<CustomerGrpcService>();
 
 app.UseMiddleware<ExceptionLoggingMiddleware>();
 

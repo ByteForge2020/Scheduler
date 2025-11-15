@@ -1,16 +1,15 @@
-// using Customer.Contracts;
-
 using Customer.Contracts;
+using General.Application.Queries.GetCustomers;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace General.Application.Queries.GetCustomers
+namespace General.Application.Queries.GetCustomersByGrpc
 {
-    public record TestQuery(Guid AccountId) : IRequest<TestQuery.Result>
+    public record GetCustomersByGrpc(Guid AccountId) : IRequest<GetCustomersByGrpc.Result>
     {
         public record Result(GetCustomersResponse Res);
     
-        public class Handler : IRequestHandler<TestQuery, Result>
+        public class Handler : IRequestHandler<GetCustomersByGrpc, Result>
         {
             private readonly ILogger<Handler> _logger;
             private readonly CustomerService.CustomerServiceClient _client;
@@ -20,7 +19,7 @@ namespace General.Application.Queries.GetCustomers
                 _client = client;
             }
 
-            public async Task<Result> Handle(TestQuery request, CancellationToken cancellationToken)
+            public async Task<Result> Handle(GetCustomersByGrpc request, CancellationToken cancellationToken)
             {
                 var customersRequest = new GetCustomersRequest { AccountId = request.AccountId.ToString() };
                 var response = await _client.GetCustomersAsync(customersRequest);

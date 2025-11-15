@@ -97,7 +97,6 @@ namespace Gateway
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.UseWebSockets();
 
-            //using customized Ocelot with websocket auth
             await app.UseOcelot();
         }
     }

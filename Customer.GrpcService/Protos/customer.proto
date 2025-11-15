@@ -1,0 +1,22 @@
+syntax = "proto3"; // version of protocol buffers
+
+option csharp_namespace = "Customer.Contracts";  // C# namespace for generated code
+
+package customer; // package name
+
+service CustomerService {
+  rpc GetCustomers (GetCustomersRequest) returns (GetCustomersResponse);
+}
+
+message GetCustomersRequest {
+  string account_id = 1;
+}
+
+message GetCustomersResponse {
+  repeated CustomerItem customers = 1;
+}
+
+message CustomerItem {
+  string id = 1;
+  string name = 2;
+}

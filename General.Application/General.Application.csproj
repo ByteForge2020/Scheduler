@@ -7,15 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <PackageReference Include="Google.Protobuf" Version="3.33.0" />
+      <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.76.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="MediatR" Version="11.0.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Customer.GrpcService\Customer.GrpcService.csproj" />
       <ProjectReference Include="..\General.Infrastructure\General.Infrastructure.csproj" />
     </ItemGroup>
 

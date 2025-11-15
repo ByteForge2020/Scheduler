@@ -1,3 +1,4 @@
+using Common.Authorization;
 using Common.Authorization.AuthorizationAttributes;
 using General.Application.Queries.GetCustomers;
 using MediatR;
@@ -10,16 +11,19 @@ namespace General.API.Controllers
     public class GeneralController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IAuthorization _authorizationContext;
 
-        public GeneralController(IMediator mediator)
+        public GeneralController(IMediator mediator, IAuthorization authorizationContext)
         {
             _mediator = mediator;
+            _authorizationContext = authorizationContext;
         }
 
         [HttpGet]
         [AccountIdAuthorization]
-        public async Task<ActionResult<TestQuery.Result>> Test([FromQuery] TestQuery command, CancellationToken ct)
+        public async Task<ActionResult<TestQuery.Result>> Test(CancellationToken ct)
         {
+            var command = new TestQuery(_authorizationContext.ThrowOrGetAccountId());
             return await _mediator.Send(command, ct);
         }
     }

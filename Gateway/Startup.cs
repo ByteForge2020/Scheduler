@@ -1,3 +1,4 @@
+using Common.OpenTelemetry;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -20,6 +21,8 @@ namespace Gateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSchedulerOpenTelemetry(Configuration, "Gateway");
+
             services.AddCors(options => options.AddPolicy("CorsPolicy",
                 builder => builder.WithOrigins("http://localhost")
                     .AllowAnyHeader()

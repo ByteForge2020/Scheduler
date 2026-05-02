@@ -15,6 +15,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Common.OpenTelemetry\Common.OpenTelemetry.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
         <Content Remove="$(SpaRoot)**"/>
         <None Remove="$(SpaRoot)**"/>

@@ -8,8 +8,7 @@ using Common.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +41,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo {Title = "Clear.Authentication.API", Version = "v1"});
 });
 
-builder.Services.AddMediatR(typeof(CreateUserCommand).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
 
 var app = builder.Build();
 

@@ -29,6 +29,27 @@ public static class OpenTelemetryServiceCollectionExtensions
         var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? Environments.Production;
         var useConsoleTraces = string.IsNullOrWhiteSpace(otlpEndpoint)
             && string.Equals(environment, Environments.Development, StringComparison.OrdinalIgnoreCase);
+
+        static Uri? BuildEndpointUri(string? endpoint)
+        {
+            if (string.IsNullOrWhiteSpace(endpoint))
+                return null;
+
+            if (Uri.TryCreate(endpoint, UriKind.Absolute, out var absolute))
+                return absolute;
+
+            // Support config values like "localhost:4317" by assuming http scheme.
+            return Uri.TryCreate($"http://{endpoint}", UriKind.Absolute, out var withScheme)
+                ? withScheme
+                : null;
+        }
+
+        static OtlpExportProtocol ResolveProtocol(Uri endpoint)
+            => endpoint.Port == 4317
+                ? OtlpExportProtocol.Grpc
+                : OtlpExportProtocol.HttpProtobuf;
+
+        var endpointUri = BuildEndpointUri(otlpEndpoint);
         
         services.AddOpenTelemetry()
             .ConfigureResource(resource => resource.AddService(name))
@@ -38,12 +59,12 @@ public static class OpenTelemetryServiceCollectionExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
 
-                if (!string.IsNullOrWhiteSpace(otlpEndpoint))
+                if (endpointUri is not null)
                 {
                     tracing.AddOtlpExporter(options =>
                     {
-                        options.Endpoint = new Uri(otlpEndpoint);
-                        options.Protocol = OtlpExportProtocol.HttpProtobuf;
+                        options.Endpoint = endpointUri;
+                        options.Protocol = ResolveProtocol(endpointUri);
                     });
                 }
                 else if (useConsoleTraces)
@@ -58,12 +79,12 @@ public static class OpenTelemetryServiceCollectionExtensions
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation();
 
-                if (!string.IsNullOrWhiteSpace(otlpEndpoint))
+                if (endpointUri is not null)
                 {
                     metrics.AddOtlpExporter(options =>
                     {
-                        options.Endpoint = new Uri(otlpEndpoint);
-                        options.Protocol = OtlpExportProtocol.HttpProtobuf;
+                        options.Endpoint = endpointUri;
+                        options.Protocol = ResolveProtocol(endpointUri);
                     });
                 }
             });

@@ -144,7 +144,7 @@ namespace Authentication.Application.Services.JwtService
         {
             return new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Email, user.Email),
+                new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
                 new(JwtTokenClaims.UserId, user.Id),
                 new(JwtTokenClaims.AccountId, user.AccountId.ToString()),
             };

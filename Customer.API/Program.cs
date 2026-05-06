@@ -10,8 +10,6 @@ using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +29,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthorization, AuthorizationContext>();
 builder.Services.AddGrpc();
 
-builder.Services.AddMediatR(typeof(CreateCustomerCommand).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
 
 builder.Services.AddMassTransit(x =>
 {

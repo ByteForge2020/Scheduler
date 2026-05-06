@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -39,7 +40,11 @@ public static class OpenTelemetryServiceCollectionExtensions
 
                 if (!string.IsNullOrWhiteSpace(otlpEndpoint))
                 {
-                    tracing.AddOtlpExporter(options => options.Endpoint = new Uri(otlpEndpoint));
+                    tracing.AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(otlpEndpoint);
+                        options.Protocol = OtlpExportProtocol.HttpProtobuf;
+                    });
                 }
                 else if (useConsoleTraces)
                 {
@@ -55,7 +60,11 @@ public static class OpenTelemetryServiceCollectionExtensions
 
                 if (!string.IsNullOrWhiteSpace(otlpEndpoint))
                 {
-                    metrics.AddOtlpExporter(options => options.Endpoint = new Uri(otlpEndpoint));
+                    metrics.AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(otlpEndpoint);
+                        options.Protocol = OtlpExportProtocol.HttpProtobuf;
+                    });
                 }
             });
 

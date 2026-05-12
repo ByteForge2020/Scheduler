@@ -19,8 +19,8 @@ const App = () => {
             <Routes>
                 {isAuthenticated ? (
                     <>
-                        <Route path={Url.Default} element={<SchedulerAppointments />} />
-                        <Route path={Url.Appointments.Main} element={<SchedulerAppointments />} />
+                        <Route path={Url.Default} element={<CustomerDataGrid />} />
+                        <Route path={Url.Appointments.Main} element={<CustomerDataGrid />} />
                         <Route path={Url.Customers.Main} element={<CustomerDataGrid />} />
                         <Route path={Url.Authentication.Login} element={<SignIn />} />
                     </>
